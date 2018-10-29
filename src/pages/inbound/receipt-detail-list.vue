@@ -2,11 +2,12 @@
   <div>
     <common-header :tittle="tittle" :showmore="true"></common-header>
     <div class="page-content">
-      <h1>{{ receipt }}</h1>
-      <section class="card">
-        <a href="http://sao315.com/w/api/saoyisao">扫描(Scan)</a>
+      <section>
         <mt-field placeholder="请输入SKU" v-show="showSkuInput" @keyup.enter.native="getSku()" v-model="sku"></mt-field>
-        <span v-show="!showSkuInput">{{ sku }}-苹果手机001</span>
+        <div v-show="!showSkuInput">
+          <mt-cell :title="skuData.descr" :value="skuData.sku"></mt-cell>
+          <mt-progress :value="60" :bar-height="25"></mt-progress>
+        </div>
       </section>
     </div>
   </div>
@@ -14,13 +15,17 @@
 
 <script>
 import commonHeader from 'common/common-header'
+import {getSku} from '../../api/receipt'
+import { Toast } from 'mint-ui'
+
 export default {
   data () {
     return {
       tittle: '详情',
       receipt: {},
       showSkuInput: true,
-      sku: ''
+      sku: '',
+      skuData: {}
     }
   },
   components: {
@@ -40,17 +45,21 @@ export default {
       this.receipt = routerParams
     },
     getSku() {
+      let skuObj = getSku(this.receipt.receiptKey, this.sku)
+      if (skuObj.errFlag !== 0) {
+        Toast({
+          message: skuObj.errMsg,
+          iconClass: 'icon icon-failed'
+        })
+        return
+      }
+      this.skuData = skuObj
       this.showSkuInput = !this.showSkuInput
-    },
-    getQRString() {
-      var reg = new RegExp("\\b"+ name +"=([^&]*)")
-      var r = location.href.match(reg)
-      if (r!=null) return unescape(r[1])
     }
   },
   watch: {
     // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
-    '$route': 'getParams',
+    '$route': 'getParams'
   }
 }
 </script>
@@ -60,11 +69,4 @@ export default {
   @import "~styles/index.less";
   @import "~styles/variable.less";
 
-  .card {
-    width: 100%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    text-align: center;
-    float: left;
-    margin-right: 10px;
-  }
 </style>

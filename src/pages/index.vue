@@ -26,19 +26,15 @@ export default {
         },
         {
           'path': '/home',
-          'name': '推荐'
+          'name': '移库'
         },
         {
           'path': '/story',
-          'name': '故事'
+          'name': '发货'
         },
         {
           'path': '/footprints',
-          'name': '足迹'
-        },
-        {
-          'path': '/day',
-          'name': '纪念日'
+          'name': '调整'
         }
       ]
     }
@@ -122,6 +118,9 @@ export default {
             background-image: url("../assets/imgs/print-select.svg");
           }
           .tab-3 {
+            background-image: url("../assets/imgs/dy-select.svg");
+          }
+          .tab-4 {
             background-image: url("../assets/imgs/dy-select.svg");
           }
         }

@@ -19,3 +19,16 @@ export const receiptList = (status = '0') => {
   ]
   return retData
 }
+
+export const getSku = (receiptKey, sku) => {
+  let retData = {
+    errFlag: 0,
+    sku: sku,
+    descr: '测试SKU0001',
+    qtyExpected: 100,
+    qtyReceived: 0,
+    receiptKey: receiptKey,
+    errMsg: 'dfweweewrew'
+  }
+  return retData
+}

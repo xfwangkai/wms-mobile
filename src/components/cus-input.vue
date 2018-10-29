@@ -1,7 +1,7 @@
 <template>
   <div class="input-box">
     <span class="icon"></span>
-    <input type="text" class="search" placeholder="找人 找故事">
+    <input type="text" class="search">
   </div>
 </template>
 <script>
@@ -10,8 +10,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import "~styles/index.less";
-@import "~styles/variable.less";
+@import '~styles/index.less';
+@import '~styles/variable.less';
 .input-box{
   position: relative;
   .icon{
