@@ -21,19 +21,19 @@ export default {
     return {
       navList: [
         {
-          'path': '/receiptlist',
+          'path': '/receipt',
           'name': '收货'
         },
         {
-          'path': '/home',
+          'path': '/moving',
           'name': '移库'
         },
         {
-          'path': '/story',
+          'path': '/shipment',
           'name': '发货'
         },
         {
-          'path': '/footprints',
+          'path': '/adjustment',
           'name': '调整'
         }
       ]

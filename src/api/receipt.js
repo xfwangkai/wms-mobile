@@ -26,8 +26,9 @@ export const getSku = (receiptKey, sku) => {
     sku: sku,
     descr: '测试SKU0001',
     qtyExpected: 100,
-    qtyReceived: 0,
+    qtyReceived: 84,
     receiptKey: receiptKey,
+    thisQtyReceived: 0,
     errMsg: 'dfweweewrew'
   }
   return retData

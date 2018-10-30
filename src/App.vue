@@ -29,6 +29,7 @@ export default {
 
 <style lang="less">
 @import "~styles/variable.less";
+@import "~styles/index.less";
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -62,5 +63,19 @@ export default {
  transform: translate3d(-90% 0, 0);
  -webkit-transform: translate3d(-90%, 0, 0);
  -moz-transform: translate3d(-90%, 0, 0);
+}
+.demo-vsteper-container{
+  max-width: 380px;
+  max-height: 400px;
+  margin: auto;
+}
+
+.demo-step-content {
+  margin: 0  16px;
+}
+
+.demo-step-button {
+  margin-top: 12px;
+  margin-right: 12px;
 }
 </style>

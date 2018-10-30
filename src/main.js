@@ -10,6 +10,9 @@ import Mint from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import FastClick from 'fastclick'
 import '../static/js/flexible.js'
+import MuseUI from 'muse-ui';
+import 'muse-ui/dist/muse-ui.css';
+import Toast from 'muse-ui-toast'
 /**
 *监听浏览器点击返回前进操作动画
 *浏览器端使用需要注意路由path的创建，二级应该在一级的基础上添加
@@ -51,7 +54,9 @@ window.addEventListener('popstate', function(e) {
 // })
 
 Vue.use(Mint)
+Vue.use(MuseUI)
 Vue.use(Vuex)
+Vue.use(Toast)
 Vue.config.productionTip = false
 FastClick.attach(document.body)
 

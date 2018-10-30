@@ -35,44 +35,40 @@ export default new Router({
       path: '/',
       name: 'index',
       component: (resolve) => require(['@/pages/index'], resolve),
-      redirect: '/receiptlist',
+      redirect: '/receipt',
       children: [
         {
-          path: '/receiptlist',
-          name: 'receiptlist',
+          path: '/receipt',
+          name: 'receipt',
           component: (resolve) => require(['@/pages/inbound/receipt-list'], resolve)
         },
+
         {
-          path: '/home',
-          name: 'home',
-          component: (resolve) => require(['@/pages/index/home'], resolve)
+          path: '/moving',
+          name: 'moving',
+          component: (resolve) => require(['@/pages/inventory/moving'], resolve)
         },
         {
-          path: '/story',
-          name: 'story',
-          component: (resolve) => require(['@/pages/index/story'], resolve)
+          path: '/shipment',
+          name: 'shipmentlist',
+          component: (resolve) => require(['@/pages/outbound/shipment-list'], resolve)
         },
         {
-          path: '/footprints',
-          name: 'footprints',
-          component: (resolve) => require(['@/pages/index/footprints'], resolve)
+          path: '/shipment/pickingtask',
+          name: 'pickingtask',
+          component: (resolve) => require(['@/pages/outbound/picking-task-list'], resolve)
         },
         {
-          path: '/day',
-          name: 'day',
-          component: (resolve) => require(['@/pages/index/day'], resolve)
+          path: '/adjustment',
+          name: 'adjustment',
+          component: (resolve) => require(['@/pages/inventory/adjustment'], resolve)
         }
       ]
     },
     {
-      path: '/receiptlist/receiptdetaillist',
-      name: 'receiptdetaillist',
+      path: '/receipt/receiptdetail',
+      name: 'receiptdetail',
       component: (resolve) => require(['@/pages/inbound/receipt-detail-list'], resolve)
-    },
-    {
-      path: '/Home/Detail',
-      name: 'Detail',
-      component: (resolve) => require(['@/pages/detail'], resolve)
     }
   ]
 })
