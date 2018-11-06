@@ -4,7 +4,7 @@
     <div class="page-content">
       <mu-list textline="two-line">
         <div v-for="item in receiptList" :key="item.id">
-          <mu-list-item avatar :ripple="false" button @click="todetail({name:'receiptdetail', params:{receipt: item}})">
+          <mu-list-item avatar :ripple="false" button @click="todetail({name:'receiptdetail', query:{receipt: item}})">
             <mu-list-item-content>
               <mu-list-item-title>{{item.receiptKey}}</mu-list-item-title>
               <mu-list-item-sub-title>{{item.supplierName}}</mu-list-item-sub-title>

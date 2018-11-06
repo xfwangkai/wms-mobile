@@ -15,15 +15,21 @@ export default {
     }
   },
   watch: {
-    $route() {
-      if (this.$router.isleft) {
-        this.transitionName = 'slideleft'
-      }
-      if (this.$router.isright) {
-        this.transitionName = 'slideright'
+    '$route' (to, from) {
+      if (from.path !== '/') {
+        if (to.path === '/qrscanner') {
+          this.transitionName = 'slideleft'
+        } else if (from.path === '/qrscanner') {
+          this.transitionName = 'slideright'
+        } else {
+          const toDepth = to.path.split('/').length
+          const fromDepth = from.path.split('/').length
+          this.transitionName = toDepth < fromDepth ? 'slideright' : 'slideleft'
+        }
       }
     }
   }
+
 }
 </script>
 
@@ -77,5 +83,15 @@ export default {
 .demo-step-button {
   margin-top: 12px;
   margin-right: 12px;
+}
+.icon-qrscan{
+  position: absolute;
+  display: inline-block;
+  .w(50);
+  .h(50);
+  .left(25);
+  .top(25);
+  background-image: url("assets/imgs/qrscan.svg");
+  background-size: cover;
 }
 </style>

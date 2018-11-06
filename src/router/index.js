@@ -69,6 +69,11 @@ export default new Router({
       path: '/receipt/receiptdetail',
       name: 'receiptdetail',
       component: (resolve) => require(['@/pages/inbound/receipt-detail-list'], resolve)
+    },
+    {
+      path: '/qrscanner',
+      name: 'qrscanner',
+      component: (resolve) => require(['@/components/qrscanner'], resolve)
     }
   ]
 })

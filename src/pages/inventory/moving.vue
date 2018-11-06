@@ -1,6 +1,6 @@
 <template>
   <div>
-    <common-header :tittle="tittle" :showmore="true"></common-header>
+    <common-header :title="tittle" :showmore="true"></common-header>
     <div class="page-content">
       <mu-container>
         <div class="">
@@ -68,66 +68,66 @@
 </template>
 
 <script>
-  import commonHeader from 'common/common-header'
+import commonHeader from 'common/common-header'
 
-  export default {
-    data () {
-      return {
-        tittle: '移库',
-        fromloc: '',
-        sku: '',
-        invData: {},
-        vactiveStep: 0,
-        toloc: '',
-        qty: ''
-      }
-    },
-    components: {
-      commonHeader
-    },
-    created() {
-      this.getParams()
-    },
-    computed: {
-    },
-    methods: {
-      tohome () {
-        this.$router.goBack()
-      },
-      getParams () {
-        // 取到路由带过来的参数
-        var routerParams = this.$route.params.receipt
-        // 将数据放在当前组件的数据内
-        this.receipt = routerParams
-      },
-      getFromlocData() {
-        this.vactiveStep++;
-      },
-      getInvData(){
-        this.invData = {
-          fromloc: this.fromloc,
-          toloc: this.toloc,
-          sku: this.sku,
-          invQty: Math.random(),
-          descr: '测试SKU0001'
-        }
-        this.vactiveStep++;
-      },
-      validToloc(){
-        this.vactiveStep++;
-      },
-      doMoving(){
-        this.vactiveStep++;
-      },
-      vhandlePrev() {
-        this.vactiveStep--;
-      }
-    },
-    watch: {
-      // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
-      '$route': 'getParams'
+export default {
+  data () {
+    return {
+      tittle: '移库',
+      fromloc: '',
+      sku: '',
+      invData: {},
+      vactiveStep: 0,
+      toloc: '',
+      qty: ''
     }
+  },
+  components: {
+    commonHeader
+  },
+  created() {
+    this.getParams()
+  },
+  computed: {
+  },
+  methods: {
+    tohome () {
+      this.$router.goBack()
+    },
+    getParams () {
+      // 取到路由带过来的参数
+      var routerParams = this.$route.params.receipt
+      // 将数据放在当前组件的数据内
+      this.receipt = routerParams
+    },
+    getFromlocData() {
+      this.vactiveStep++
+    },
+    getInvData() {
+      this.invData = {
+        fromloc: this.fromloc,
+        toloc: this.toloc,
+        sku: this.sku,
+        invQty: Math.random(),
+        descr: '测试SKU0001'
+      }
+      this.vactiveStep++
+    },
+    validToloc() {
+      this.vactiveStep++
+    },
+    doMoving() {
+      this.vactiveStep++
+    },
+    vhandlePrev() {
+      this.vactiveStep--
+    }
+  },
+  watch: {
+    // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
+    '$route': 'getParams'
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

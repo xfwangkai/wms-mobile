@@ -1,6 +1,7 @@
 <template>
   <div>
-    <common-header :tittle="tittle" :showmore="true"></common-header>
+    <common-header :title="tittle" :showmore="true"></common-header>
+
     <div class="page-content">
       <mu-container>
         <div class="">
@@ -10,8 +11,13 @@
                 输入/扫描SKU
               </mu-step-label>
               <mu-step-content>
-                <mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field>
-                <mu-button class="demo-step-button" @click="getSku()" color="primary">下一步</mu-button>
+                <mu-row gutter>
+                  <mu-col><QrscanIcon></QrscanIcon></mu-col>
+                  <mu-col><mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field></mu-col>
+                </mu-row>
+                <mu-row gutter>
+                  <mu-col offset="3"><mu-button @click="getSku()" color="primary">下一步</mu-button></mu-col>
+                </mu-row>
               </mu-step-content>
             </mu-step>
 
@@ -47,6 +53,7 @@
 <script>
 import commonHeader from 'common/common-header'
 import {getSku} from '../../api/receipt'
+import QrscanIcon from '../../components/qrscan-icon'
 
 export default {
   data () {
@@ -59,7 +66,14 @@ export default {
       qty: ''
     }
   },
+  mounted() {
+    if (this.$route.query.qrresult) {
+      this.sku = this.$route.query.qrresult
+      this.getSku()
+    }
+  },
   components: {
+    QrscanIcon,
     commonHeader
   },
   created() {
@@ -70,32 +84,28 @@ export default {
   methods: {
     getParams () {
       // 取到路由带过来的参数
-      var routerParams = this.$route.params.receipt
-      // 将数据放在当前组件的数据内
-      this.receipt = routerParams
+      this.receipt = this.$route.query.receipt
     },
     getSku() {
       let skuObj = getSku(this.receipt.receiptKey, this.sku)
       if (skuObj.errFlag !== 0) {
-        alert('sssss')
-        Toast.error(skuObj.errMsg);
+        Toast.error(skuObj.errMsg)
         return
       }
       this.skuData = skuObj
       this.skuData.sku = this.sku
       this.sku = ''
-      this.vactiveStep++;
+      this.vactiveStep++
     },
-    receiving(){
-      if(this.qty + this.skuData.qtyReceived > this.skuData.qtyExpected){
-        Toast.error('不允许超量收货');
+    receiving() {
+      if (this.qty + this.skuData.qtyReceived > this.skuData.qtyExpected) {
+        Toast.error('不允许超量收货')
         return
       }
       this.skuData.thisQtyReceived = this.qty
-
     },
     vhandlePrev() {
-      this.vactiveStep--;
+      this.vactiveStep--
     }
   },
   watch: {
@@ -107,8 +117,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-  @import "~styles/index.less";
-  @import "~styles/variable.less";
   .linear-progress {
     margin: 16px 0;
   }
