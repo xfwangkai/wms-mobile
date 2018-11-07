@@ -21,11 +21,11 @@ export default {
     }
   },
   mounted() {
-    this.$route.query.fieldId = this.fieldId
+    this.fieldId = this.$route.query.fieldId
     this.startRecognize()
   },
   beforeRouteLeave(to, from, next) {
-    to.query.qrresult = {qrString: this.qrresult, fieldId: this.fieldId}
+    to.query.qrResult = { qrString: this.qrString, fieldId: this.fieldId }
     next()
   },
   methods: {
@@ -69,7 +69,10 @@ export default {
     },
     // 关闭条码识别控件
     closeScan() {
-      if (!window.plus) return
+      if (!window.plus){
+        this.$router.goBack()
+        return
+      }
       scan.close()
       this.$router.goBack()
     }

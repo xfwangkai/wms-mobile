@@ -10,8 +10,13 @@
                 输入/扫描库位
               </mu-step-label>
               <mu-step-content>
-                <mu-text-field v-model="fromloc" placeholder="请输入移出库位"></mu-text-field>
-                <mu-button @click="getFromlocData()" color="primary">下一步</mu-button>
+                <mu-row gutter>
+                  <mu-col><QrscanIcon :field-id="fromlocQR"></QrscanIcon></mu-col>
+                  <mu-col><mu-text-field v-model="fromloc" placeholder="请输入移出库位"></mu-text-field></mu-col>
+                </mu-row>
+                <mu-row gutter>
+                  <mu-col offset="3"><mu-button @click="getFromlocData()" color="primary">下一步</mu-button></mu-col>
+                </mu-row>
               </mu-step-content>
             </mu-step>
 
@@ -21,9 +26,16 @@
               </mu-step-label>
               <mu-step-content>
                 <p>原库位:{{fromloc}}</p>
-                <mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field>
-                <mu-button class="demo-step-button" @click="getInvData" color="primary">下一步</mu-button>
-                <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
+                <mu-row gutter>
+                  <mu-col><QrscanIcon :field-id="skuQR"></QrscanIcon></mu-col>
+                  <mu-col><mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field></mu-col>
+                </mu-row>
+                <mu-row gutter>
+                  <mu-col offset="3">
+                    <mu-button class="demo-step-button" @click="getInvData" color="primary">下一步</mu-button>
+                    <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
+                  </mu-col>
+                </mu-row>
               </mu-step-content>
             </mu-step>
 
@@ -37,9 +49,16 @@
                   货品名称:{{invData.descr}}
                   库存数量:{{invData.invQty}}
                 </p>
-                <mu-text-field v-model="toloc" placeholder="请输入目标库位"></mu-text-field>
-                <mu-button class="demo-step-button" @click="validToloc" color="primary">下一步</mu-button>
-                <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
+                <mu-row gutter>
+                  <mu-col><QrscanIcon :field-id="tolocQR"></QrscanIcon></mu-col>
+                  <mu-col><mu-text-field v-model="toloc" placeholder="请输入目标库位"></mu-text-field></mu-col>
+                </mu-row>
+                <mu-row gutter>
+                  <mu-col offset="3">
+                    <mu-button class="demo-step-button" @click="validToloc" color="primary">下一步</mu-button>
+                    <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
+                  </mu-col>
+                </mu-row>
               </mu-step-content>
             </mu-step>
 
@@ -69,6 +88,7 @@
 
 <script>
 import commonHeader from 'common/common-header'
+import QrscanIcon from '../../components/qrscan-icon'
 
 export default {
   data () {
@@ -79,14 +99,30 @@ export default {
       invData: {},
       vactiveStep: 0,
       toloc: '',
-      qty: ''
+      qty: '',
+      skuQR: 'skuQR',
+      fromlocQR: 'fromlocQR',
+      tolocQR: 'tolocQR'
     }
   },
   components: {
-    commonHeader
+    commonHeader,
+    QrscanIcon
   },
   created() {
     this.getParams()
+  },
+  mounted() {
+    if (this.$route.query.qrResult) {
+      let qrResult = this.$route.query.qrResult
+      if (qrResult.fieldId === this.skuQR) {
+        this.sku = qrResult.qrString
+      } else if (qrResult.fieldId === this.fromlocQR) {
+        this.fromloc = qrResult.qrString
+      } else if (qrResult.fieldId === this.tolocQR) {
+        this.toloc = qrResult.qrString
+      }
+    }
   },
   computed: {
   },

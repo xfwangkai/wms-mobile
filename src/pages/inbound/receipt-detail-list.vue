@@ -68,11 +68,10 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.qrresult) {
-      let qrresult = this.$route.query.qrresult
-      alert(qrresult.fieldId)
-      if(qrresult.fieldId === this.skuQR){
-        this.sku = this.$route.query.qrresult
+    if (this.$route.query.qrResult) {
+      let qrResult = this.$route.query.qrResult
+      if (qrResult.fieldId === this.skuQR) {
+        this.sku = qrResult.qrString
         this.getSku()
       }
     }
