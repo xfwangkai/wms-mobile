@@ -12,7 +12,7 @@
               </mu-step-label>
               <mu-step-content>
                 <mu-row gutter>
-                  <mu-col><QrscanIcon></QrscanIcon></mu-col>
+                  <mu-col><QrscanIcon :field-id="skuQR"></QrscanIcon></mu-col>
                   <mu-col><mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field></mu-col>
                 </mu-row>
                 <mu-row gutter>
@@ -63,13 +63,18 @@ export default {
       sku: '',
       skuData: {},
       vactiveStep: 0,
-      qty: ''
+      qty: '',
+      skuQR: 'skuQR'
     }
   },
   mounted() {
     if (this.$route.query.qrresult) {
-      this.sku = this.$route.query.qrresult
-      this.getSku()
+      let qrresult = this.$route.query.qrresult
+      alert(qrresult.fieldId)
+      if(qrresult.fieldId === this.skuQR){
+        this.sku = this.$route.query.qrresult
+        this.getSku()
+      }
     }
   },
   components: {

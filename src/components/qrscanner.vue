@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="left-icon">
-      <span @click="closeScan" class="icon-back"></span>
-    </div>
     <div class="scan">
+      <div class="left-icon">
+        <span @click="closeScan" class="icon-back"></span>
+      </div>
       <div id="bcid">
       </div>
     </div>
@@ -16,14 +16,16 @@ let scan = null
 export default {
   data() {
     return {
-      qrresult: ''
+      qrString: '',
+      fieldId: ''
     }
   },
   mounted() {
+    this.$route.query.fieldId = this.fieldId
     this.startRecognize()
   },
   beforeRouteLeave(to, from, next) {
-    to.query.qrresult = this.qrresult
+    to.query.qrresult = {qrString: this.qrresult, fieldId: this.fieldId}
     next()
   },
   methods: {
@@ -32,6 +34,7 @@ export default {
       let that = this
       if (!window.plus) return
       scan = new plus.barcode.Barcode('bcid')
+      scan.start()
       scan.onmarked = onmarked
 
       function onmarked(type, result, file) {
@@ -50,7 +53,7 @@ export default {
             break
         }
         result = result.replace(/\n/g, '')
-        that.qrresult = result
+        that.qrString = result
         that.closeScan()
       }
     },

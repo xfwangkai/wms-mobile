@@ -12,9 +12,10 @@ export default {
     return {
     }
   },
+  props: ['fieldId'],
   methods: {
     toScanner() {
-      this.$router.togo('/qrscanner')
+      this.$router.togo({name: 'qrscanner', query: {fieldId: this.fieldId}})
     }
   }
 }
