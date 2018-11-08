@@ -1,51 +1,54 @@
 <template>
   <div>
-    <common-header :title="tittle" :showmore="true"></common-header>
+    <div v-if="isScan">
+      <qrscanner @getQR="getQR" @closeScan="isScan=false"></qrscanner>
+    </div>
+    <div v-else>
+      <common-header :title="tittle" :showmore="true"></common-header>
+      <div class="page-content">
+        <mu-container>
+          <div class="">
+            <mu-stepper :active-step="vactiveStep" orientation="vertical">
+              <mu-step>
+                <mu-step-label>
+                  输入/扫描SKU
+                </mu-step-label>
+                <mu-step-content>
+                  <mu-row gutter>
+                    <mu-col><span class="icon-qrscan" @click="toScanner('sku')"></span></mu-col>
+                    <mu-col><mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field></mu-col>
+                  </mu-row>
+                  <mu-row gutter>
+                    <mu-col offset="3"><mu-button @click="getSku()" color="primary">下一步</mu-button></mu-col>
+                  </mu-row>
+                </mu-step-content>
+              </mu-step>
+              <mu-step>
+                <mu-step-label>
+                  输入收货数量
+                </mu-step-label>
+                <mu-step-content>
+                  <mu-row gutter>
+                    <mu-col span="8">商品名称:{{skuData.descr}}</mu-col>
+                    <mu-col span="4">商品条码:{{skuData.sku}}</mu-col>
+                  </mu-row>
+                  <mu-row gutter>
+                    <mu-col span="2">数量：</mu-col>
+                    <mu-col span="8"><mu-linear-progress size="15" mode="determinate" :value="(skuData.qtyReceived/skuData.qtyExpected)*100"></mu-linear-progress></mu-col>
+                    <mu-col span="2">{{skuData.qtyReceived}} / {{skuData.qtyExpected}}</mu-col>
+                  </mu-row>
+                  <mu-row gutter>
+                    <mu-col span="12"><mu-text-field type="number" placeholder="请输入数量" v-model="qty"></mu-text-field></mu-col>
+                  </mu-row>
+                  <mu-button class="demo-step-button" @click="receiving" color="primary">完成</mu-button>
+                  <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
+                </mu-step-content>
+              </mu-step>
 
-    <div class="page-content">
-      <mu-container>
-        <div class="">
-          <mu-stepper :active-step="vactiveStep" orientation="vertical">
-            <mu-step>
-              <mu-step-label>
-                输入/扫描SKU
-              </mu-step-label>
-              <mu-step-content>
-                <mu-row gutter>
-                  <mu-col><QrscanIcon :field-id="skuQR"></QrscanIcon></mu-col>
-                  <mu-col><mu-text-field v-model="sku" placeholder="请输入SKU"></mu-text-field></mu-col>
-                </mu-row>
-                <mu-row gutter>
-                  <mu-col offset="3"><mu-button @click="getSku()" color="primary">下一步</mu-button></mu-col>
-                </mu-row>
-              </mu-step-content>
-            </mu-step>
-
-            <mu-step>
-              <mu-step-label>
-                输入收货数量
-              </mu-step-label>
-              <mu-step-content>
-                <mu-row gutter>
-                  <mu-col span="8">商品名称:{{skuData.descr}}</mu-col>
-                  <mu-col span="4">商品条码:{{skuData.sku}}</mu-col>
-                </mu-row>
-                <mu-row gutter>
-                  <mu-col span="2">数量：</mu-col>
-                  <mu-col span="8"><mu-linear-progress size="15" mode="determinate" :value="(skuData.qtyReceived/skuData.qtyExpected)*100"></mu-linear-progress></mu-col>
-                  <mu-col span="2">{{skuData.qtyReceived}} / {{skuData.qtyExpected}}</mu-col>
-                </mu-row>
-                <mu-row gutter>
-                  <mu-col span="12"><mu-text-field type="number" placeholder="请输入数量" v-model="qty"></mu-text-field></mu-col>
-                </mu-row>
-                <mu-button class="demo-step-button" @click="receiving" color="primary">完成</mu-button>
-                <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
-              </mu-step-content>
-            </mu-step>
-
-          </mu-stepper>
-        </div>
-      </mu-container>
+            </mu-stepper>
+          </div>
+        </mu-container>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +56,7 @@
 <script>
 import commonHeader from 'common/common-header'
 import {getSku} from '../../api/receipt'
-import QrscanIcon from '../../components/qrscan-icon'
+import Qrscanner from '../../components/qrscanner'
 
 export default {
   data () {
@@ -64,7 +67,7 @@ export default {
       skuData: {},
       vactiveStep: 0,
       qty: '',
-      skuQR: 'skuQR'
+      isScan: false
     }
   },
   mounted() {
@@ -77,8 +80,8 @@ export default {
     }
   },
   components: {
-    QrscanIcon,
-    commonHeader
+    commonHeader,
+    Qrscanner
   },
   created() {
     this.getParams()
@@ -86,6 +89,16 @@ export default {
   computed: {
   },
   methods: {
+    toScanner(result){
+      this.fieldId = result
+      this.isScan = true
+    },
+    getQR(result){
+      if(this.fieldId === 'sku') {
+        this.sku = result
+        this.getSku()
+      }
+    },
     getParams () {
       // 取到路由带过来的参数
       this.receipt = this.$route.query.receipt

@@ -94,4 +94,19 @@ export default {
   background-image: url("assets/imgs/qrscan.svg");
   background-size: cover;
 }
+.loadmore-wrap {
+  width: 100%;
+  max-width: 360px;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  .mu-appbar {
+    width: 100%;
+  }
+}
+.loadmore-content {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
 </style>

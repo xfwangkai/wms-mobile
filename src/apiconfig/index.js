@@ -1,11 +1,12 @@
 /* eslint-disable */
 import axios from 'axios'
+import qs from 'qs'
 
 /**
 * 定义请求常量
 * TIME_OUT、ERR_OK
 */
-export const TIME_OUT = 1000;    // 请求超时时间
+export const TIME_OUT = 5000;    // 请求超时时间
 export const ERR_OK = true;      // 请求成功返回状态，字段和后台统一
 export const baseUrl = process.env.BASE_URL   // 引入全局url，定义在全局变量process.env中
 
@@ -44,11 +45,12 @@ axios.interceptors.response.use(
 )
 // 封装post请求
 export function fetch(requestUrl, params = '') {
+  console.log(params)
   return axios({
     url: requestUrl,
     method: 'post',
     data: {
-      'body': params
+      'body': qs.stringify(params)
     }
   })
 }

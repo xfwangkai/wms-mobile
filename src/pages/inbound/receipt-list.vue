@@ -2,17 +2,21 @@
   <div>
     <common-header :showinput="true" :showback="false"></common-header>
     <div class="page-content">
-      <mu-list textline="two-line">
-        <div v-for="item in receiptList" :key="item.id">
-          <mu-list-item avatar :ripple="false" button @click="todetail({name:'receiptdetail', query:{receipt: item}})">
-            <mu-list-item-content>
-              <mu-list-item-title>{{item.receiptKey}}</mu-list-item-title>
-              <mu-list-item-sub-title>{{item.supplierName}}</mu-list-item-sub-title>
-            </mu-list-item-content>
-          </mu-list-item>
-          <mu-divider shallow-inset></mu-divider>
-        </div>
-      </mu-list>
+      <mu-container ref="container" class="loadmore-content">
+        <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load">
+          <mu-list textline="two-line">
+            <template v-for="item in receiptList">
+              <mu-list-item avatar :ripple="false" button @click="todetail({name:'receiptdetail', query:{receipt: item}})">
+                <mu-list-item-content>
+                  <mu-list-item-title>{{item.receiptkey}}</mu-list-item-title>
+                  <mu-list-item-sub-title>{{item.notes}}</mu-list-item-sub-title>
+                </mu-list-item-content>
+              </mu-list-item>
+              <mu-divider />
+            </template>
+          </mu-list>
+        </mu-load-more>
+      </mu-container>
     </div>
   </div>
 </template>
@@ -20,28 +24,48 @@
 <script>
 import {mapMutations, mapGetters, mapState} from 'vuex'
 import commonHeader from 'common/common-header'
-import {receiptList} from '@/api/receipt'
+import {fetchReceiptListData} from '@/api/receipt'
 
 export default {
   data: function () {
     return {
       num: 0,
-      receiptList: []
+      receiptList: [],
+      pageSize: 20,
+      pageNO: 1,
+      refreshing: false,
+      loading: false,
     }
   },
   created() {
     this.init()
   },
   methods: {
-    ...mapMutations({
-      setNum: 'SET_NUM'
-    }),
     todetail(path) {
       this.$router.togo(path)
     },
     init() {
-      var vm = this
-      vm.receiptList = receiptList()
+      fetchReceiptListData({pageNO: this.pageNO, pageSize: this.pageSize}).then(res => {
+        //this.receiptList = res.data
+        this.pageSize ++
+      })
+    },
+    refresh () {
+      this.refreshing = true;
+      this.$refs.container.scrollTop = 0;
+      alert('sssssssss')
+      setTimeout(() => {
+        this.refreshing = false;
+      }, 2000)
+    },
+    load () {
+      this.loading = true;
+      fetchReceiptListData({pageNO: this.pageNO, pageSize: this.pageSize}).then(res => {
+        this.loading = false;
+        //this.receiptList = res.data
+        console.log(res.data)
+        this.pageSize ++
+      })
     }
   },
   components: {

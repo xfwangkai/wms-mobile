@@ -9,6 +9,10 @@ export function loginUserNo(params) {
   return fetch(`${baseUrl}/root/login/checkMemberLogin`, params)
 }
 
+export function fetchReceiptListData(params) {
+  return fetch(`http://localhost:8081/getReceiptList`, params)
+}
+
 export const receiptList = (status = '0') => {
   let retData = [
     {receiptKey: 'ASN001', supplierName: '供应商01', openQty: 20, arrivaldateExpect: '2018-01-01'},
