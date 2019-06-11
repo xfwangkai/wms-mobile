@@ -1,13 +1,18 @@
 <template>
   <div>
+    <mu-appbar>
+      <mu-button icon slot="left" @click="back()">
+        <mu-icon value="arrow_back"></mu-icon>
+      </mu-button>
+      收货({{receipt.receiptkey}})
+    </mu-appbar>
     <div v-if="isScan">
       <qrscanner @getQR="getQR" @closeScan="isScan=false"></qrscanner>
     </div>
     <div v-else>
-      <common-header :title="tittle" :showmore="true"></common-header>
       <div class="page-content">
         <mu-container>
-          <div class="">
+          <div>
             <mu-stepper :active-step="vactiveStep" orientation="vertical">
               <mu-step>
                 <mu-step-label>
@@ -29,22 +34,21 @@
                 </mu-step-label>
                 <mu-step-content>
                   <mu-row gutter>
-                    <mu-col span="8">商品名称:{{skuData.descr}}</mu-col>
-                    <mu-col span="4">商品条码:{{skuData.sku}}</mu-col>
+                    <mu-col span="6">{{skuData.sku}}</mu-col>
+                    <mu-col span="6">{{skuData.descr}}</mu-col>
                   </mu-row>
                   <mu-row gutter>
                     <mu-col span="2">数量：</mu-col>
-                    <mu-col span="8"><mu-linear-progress size="15" mode="determinate" :value="(skuData.qtyReceived/skuData.qtyExpected)*100"></mu-linear-progress></mu-col>
-                    <mu-col span="2">{{skuData.qtyReceived}} / {{skuData.qtyExpected}}</mu-col>
+                    <mu-col span="8"><mu-linear-progress size="15" mode="determinate" :value="(skuData.qtyreceived/skuData.qtyexpected)*100"></mu-linear-progress></mu-col>
+                    <mu-col span="2">{{skuData.qtyreceived}} / {{skuData.qtyexpected}}</mu-col>
                   </mu-row>
                   <mu-row gutter>
                     <mu-col span="12"><mu-text-field type="number" placeholder="请输入数量" v-model="qty"></mu-text-field></mu-col>
                   </mu-row>
-                  <mu-button class="demo-step-button" @click="receiving" color="primary">完成</mu-button>
-                  <mu-button flat class="demo-step-button" @click="vhandlePrev">上一步</mu-button>
+                  <mu-button class="step-button" @click="receiving" color="primary">完成</mu-button>
+                  <mu-button flat class="step-button" @click="vhandlePrev">上一步</mu-button>
                 </mu-step-content>
               </mu-step>
-
             </mu-stepper>
           </div>
         </mu-container>
@@ -54,9 +58,12 @@
 </template>
 
 <script>
-import commonHeader from 'common/common-header'
-import {getSku} from '../../api/receipt'
+import Vue from 'vue'
+import {fetchReceiptDetail, doReceive} from '../../api/receipt'
 import Qrscanner from '../../components/qrscanner'
+import Toast from 'muse-ui-toast'
+
+Vue.use(Toast)
 
 export default {
   data () {
@@ -80,7 +87,6 @@ export default {
     }
   },
   components: {
-    commonHeader,
     Qrscanner
   },
   created() {
@@ -104,25 +110,79 @@ export default {
       this.receipt = this.$route.query.receipt
     },
     getSku() {
-      let skuObj = getSku(this.receipt.receiptKey, this.sku)
-      if (skuObj.errFlag !== 0) {
-        Toast.error(skuObj.errMsg)
-        return
-      }
-      this.skuData = skuObj
-      this.skuData.sku = this.sku
-      this.sku = ''
-      this.vactiveStep++
+      fetchReceiptDetail({receiptkey: this.receipt.receiptkey, sku: this.sku, storerkey: this.receipt.storerkey}).then(res => {
+        if(res.data.errFlag === 0){
+          console.log(res.data.retData)
+          this.skuData = res.data.retData
+          if (this.skuData.errFlag !== 0) {
+            Toast.error(this.skuData.errMsg)
+            this.speak(this.skuData.errMsg)
+            this.sku = ''
+            return
+          }
+          this.skuData.mode = 'M'
+          this.skuData.userid = 'kaiw'
+          this.sku = ''
+          this.vactiveStep++
+        }else{
+          Toast.error(res.data.errMsg)
+        }
+      })
     },
     receiving() {
-      if (this.qty + this.skuData.qtyReceived > this.skuData.qtyExpected) {
-        Toast.error('不允许超量收货')
+      if (!Number(this.qty)) {
+        Toast.error('请输入数字')
         return
       }
-      this.skuData.thisQtyReceived = this.qty
+      if(Number(this.qty)<=0){
+        Toast.error('请输入真实有效数量')
+        return
+      }
+      this.skuData.currentqtyreceived=Number(this.qty)
+      doReceive(this.skuData).then(res => {
+        console.log(res)
+        if(res.data.errFlag!==0){
+          Toast.error('收货错误:'+res.data.errMsg)
+          return
+        }
+        //this.skuData.qtyreceived = Number(this.qty)
+        this.sku = ''
+        this.qty = ''
+        this.vhandlePrev()
+      })
     },
     vhandlePrev() {
       this.vactiveStep--
+    },
+    back() {
+      this.$router.goBack()
+    },
+    speak(contents){
+      var speaktext=contents//传入的值是需要播报的内容
+      switch(plus.os.name){
+        case "iOS":
+          var AVSpeechSynthesizer=plus.ios.importClass("AVSpeechSynthesizer")
+          var AVSpeechUtterance=plus.ios.importClass("AVSpeechUtterance")
+          var AVSpeechSynthesisVoice=plus.ios.import("AVSpeechSynthesisVoice")
+          var sppech = new AVSpeechSynthesizer()
+          var voice = AVSpeechSynthesisVoice.voiceWithLanguage("zh-CN")
+          var utterance =  AVSpeechUtterance.speechUtteranceWithString(speaktext)
+          //utterance.setRate(0.4f)
+          utterance.setVoice(voice)
+          sppech.speakUtterance(utterance)
+          plus.ios.deleteObject(voice)
+          plus.ios.deleteObject(utterance)
+          plus.ios.deleteObject(sppech)
+          break
+        case "Android":
+          var main=plus.android.runtimeMainActivity()
+          var SpeechUtility=plus.android.importClass("com.iflytek.cloud.SpeechUtility")
+          SpeechUtility.createUtility(main,"appid=5a20bab9")
+          var SynthesizerPlayer=plus.android.importClass("com.iflytek.cloud.SpeechSynthesizer")
+          var play=SynthesizerPlayer.createSynthesizer(main,null)
+          play.startSpeaking(speaktext,null)
+          break
+      }
     }
   },
   watch: {

@@ -70,17 +70,17 @@ export default {
  -webkit-transform: translate3d(-90%, 0, 0);
  -moz-transform: translate3d(-90%, 0, 0);
 }
-.demo-vsteper-container{
+.vsteper-container{
   max-width: 380px;
   max-height: 400px;
   margin: auto;
 }
 
-.demo-step-content {
+.step-content {
   margin: 0  16px;
 }
 
-.demo-step-button {
+.step-button {
   margin-top: 12px;
   margin-right: 12px;
 }
@@ -96,17 +96,24 @@ export default {
 }
 .loadmore-wrap {
   width: 100%;
-  max-width: 360px;
-  height: 420px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   .mu-appbar {
     width: 100%;
+    color: black;
+    background-color: lightblue;
   }
 }
 .loadmore-content {
   flex: 1;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  background-color: #EDEFF2;
+}
+.mu-appbar {
+  width: 100%;
+  color: black;
+  background-color: lightblue;
 }
 </style>
